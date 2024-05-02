@@ -76,17 +76,18 @@ LEARNING_RATE = 0.01
 BATCH_SIZE = 1024
 
 
-def DDoS_LSTM_model(input_size):
+def DDoS_LSTM_model(input_shape):
    
     # Initialize the constructor
     model = Sequential()
     
-    model.add(LSTM(32,input_shape=(input_size,1), return_sequences=False))
+    model.add(LSTM(32,input_shape=input_shape, return_sequences=False))
     model.add(Dropout(0.5))    
     model.add(Dense(10, activation='relu'))
     model.add(Dense(1, activation='sigmoid'))
     
     print(model.summary())
+    compileModel(model, LEARNING_RATE)
     
     return model
 
@@ -109,7 +110,7 @@ def compileModel(model, lr):
 def train_model(model, X_train, y_train, X_val, y_val):
     es = EarlyStopping(monitor="val_loss", patience=PATIENCE, verbose=1, mode="min")
     mc = ModelCheckpoint(
-        "best_gru_model.keras",
+        "best_lstm_model.keras",
         monitor="val_accuracy",
         mode="max",
         verbose=1,
@@ -217,7 +218,7 @@ def main(argv):
         # full_path = full_path.replace("//", "/")  # remove double slashes when needed
         # folder = full_path.split("\\")[-2]
         dataset_folder = (
-            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/"
+            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/"
             + full_path
         )
         X_train, Y_train = load_dataset(
@@ -254,10 +255,10 @@ def main(argv):
 
         input_shape = (X_train.shape[1], X_train.shape[2])
         print("input shape: " , input_shape)
-        model = GRU_model(input_shape)
+        model = DDoS_LSTM_model(input_shape)
 
         model = train_model(model, X_train, Y_train, X_val, Y_val)
-        best_model = load_model('best_gru_model.keras')
+        best_model = load_model('best_lstm_model.keras')
 
         # With refit=True (default) GridSearchCV refits the model on the whole training set (no folds) with the best
         # hyper-parameters and makes the resulting model available as rnd_search_cv.best_estimator_.model
@@ -311,17 +312,17 @@ def main(argv):
         iterations = args.iterations
 
         dataset_filelist = glob.glob(
-            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/Dataset/10t-10n-DOS2019-dataset-test.hdf5"
+            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/Dataset/10t-10n-DOS2019-dataset-test.hdf5"
         )
         print("Found dataset files:", dataset_filelist)
 
         if args.model is not None:
             model_list = glob.glob(
-                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/output/10t-10n-DOS2019-DDoS-GRU.keras"
+                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/output/10t-10n-DOS2019-DDoS-LSTM.keras"
             )
         else:
             model_list = glob.glob(
-                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/output/10t-10n-DOS2019-DDoS-GRU.keras"
+                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/output/10t-10n-DOS2019-DDoS-LSTM.keras"
             )
         print("Found model files:", model_list)
         for model_path in model_list:
