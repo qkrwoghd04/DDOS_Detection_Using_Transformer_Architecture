@@ -107,10 +107,10 @@ def compileModel(model, lr):
     )  # here we specify the loss function
 
 
-def train_model(model, X_train, y_train, X_val, y_val):
+def train_model(model, X_train, y_train, X_val, y_val , best_model_filename):
     es = EarlyStopping(monitor="val_loss", patience=PATIENCE, verbose=1, mode="min")
     mc = ModelCheckpoint(
-        "best_lstm_model.keras",
+        best_model_filename,
         monitor="val_accuracy",
         mode="max",
         verbose=1,
@@ -129,7 +129,7 @@ def train_model(model, X_train, y_train, X_val, y_val):
 
 
 def main(argv):
-    help_string = "Usage: python3 lucid_cnn.py --train <dataset_folder> -e <epocs>"
+    help_string = "Usage: python3 ddos_lstm.py --train <dataset_folder>"
 
     parser = argparse.ArgumentParser(
         description="DDoS attacks detection with convolutional neural networks",
@@ -215,6 +215,9 @@ def main(argv):
             # for full_path in subfolders:
         full_path = subfolders[0]
         print("Full path:", subfolders[0])
+
+       
+        
         # full_path = full_path.replace("//", "/")  # remove double slashes when needed
         # folder = full_path.split("\\")[-2]
         dataset_folder = (
@@ -241,9 +244,10 @@ def main(argv):
         dataset_name = filename.split("-")[2].strip()
 
         print("\nCurrent dataset folder: ", dataset_folder)
-
-        model_name = dataset_name + "-DDoS-GRU"
-
+        input_shape = (X_train.shape[1], X_train.shape[2])
+        print("input shape: " , input_shape)
+        model = DDoS_LSTM_model(input_shape)
+        model_name = dataset_name + "-DDoS-LSTM"
         best_model_filename = (
             OUTPUT_FOLDER
             + str(time_window)
@@ -252,22 +256,16 @@ def main(argv):
             + "n-"
             + model_name
         )
-
-        input_shape = (X_train.shape[1], X_train.shape[2])
-        print("input shape: " , input_shape)
-        model = DDoS_LSTM_model(input_shape)
-
-        model = train_model(model, X_train, Y_train, X_val, Y_val)
+        
+        model = train_model(model, X_train, Y_train, X_val, Y_val, best_model_filename=best_model_filename)
         best_model = load_model('best_lstm_model.keras')
 
         # With refit=True (default) GridSearchCV refits the model on the whole training set (no folds) with the best
         # hyper-parameters and makes the resulting model available as rnd_search_cv.best_estimator_.model
       
         # We overwrite the checkpoint models with the one trained on the whole training set (not only k-1 folds)
-        # best_model.save(best_model_filename + ".keras")
+        best_model.save(best_model_filename + ".keras")
 
-        # Alternatively, to save time, one could set refit=False and load the best model from the filesystem to test its performance
-        # best_model = load_model(best_model_filename + '.h5')
 
         Y_pred_val = best_model.predict(X_val) > 0.5
         Y_true_val = Y_val.reshape((Y_val.shape[0], 1))

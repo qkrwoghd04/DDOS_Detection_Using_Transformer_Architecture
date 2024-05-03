@@ -80,7 +80,7 @@ hyperparameters = {
 }
 
 
-def Conv2DModel(model_name,input_shape,kernel_col,kernels=64,kernel_rows=3,learning_rate=0.01,
+def DDoS_CNN_model(model_name,input_shape,kernel_col,kernels=64,kernel_rows=3,learning_rate=0.01,
 regularization=None,dropout=None,):
     K.clear_session()
 
@@ -126,7 +126,7 @@ def compileModel(model, lr):
 
 
 def main(argv):
-    help_string = "Usage: python3 lucid_cnn.py --train <dataset_folder> -e <epocs>"
+    help_string = "Usage: python3 ddos_cnn.py --train"
 
     parser = argparse.ArgumentParser(
         description="DDoS attacks detection with convolutional neural networks",
@@ -215,7 +215,7 @@ def main(argv):
         # full_path = full_path.replace("//", "/")  # remove double slashes when needed
         # folder = full_path.split("\\")[-2]
         dataset_folder = (
-            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/"
+            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/"
             + full_path
         )
         X_train, Y_train = load_dataset(
@@ -239,10 +239,10 @@ def main(argv):
 
         print("\nCurrent dataset folder: ", dataset_folder)
 
-        model_name = dataset_name + "-DDoS-GRU"
+        model_name = dataset_name + "-DDoS-CNN"
         # CNN model
         keras_classifier = KerasClassifier(
-            build_fn=Conv2DModel,
+            build_fn=DDoS_CNN_model,
             model_name=model_name,
             input_shape=X_train.shape[1:],
             kernel_col=X_train.shape[2],
@@ -251,8 +251,13 @@ def main(argv):
         rnd_search_cv = GridSearchCV(
             estimator=keras_classifier,
             param_grid=hyperparameters,
-            cv=3,  # 3-fold cross-validation
-            scoring="accuracy",
+            cv=(
+                args.cross_validation
+                if args.cross_validation > 1
+                else [(slice(None), slice(None))]
+            ),
+            refit=True,
+            return_train_score=True,
         )
     
 
@@ -280,7 +285,6 @@ def main(argv):
             validation_data=(X_val, Y_val),
             callbacks=[es, mc],
         )
-        rnd_search_cv.fit(X_train, Y_train, validation_data=(X_val, Y_val))
 
 
         # With refit=True (default) GridSearchCV refits the model on the whole training set (no folds) with the best
@@ -288,7 +292,7 @@ def main(argv):
         best_model = rnd_search_cv.best_estimator_.model
 
         # We overwrite the checkpoint models with the one trained on the whole training set (not only k-1 folds)
-        # best_model.save(best_model_filename + ".keras")
+        best_model.save(best_model_filename + ".keras")
 
         # Alternatively, to save time, one could set refit=False and load the best model from the filesystem to test its performance
         # best_model = load_model(best_model_filename + '.h5')
@@ -337,17 +341,17 @@ def main(argv):
         iterations = args.iterations
 
         dataset_filelist = glob.glob(
-            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/Dataset/10t-10n-DOS2019-dataset-test.hdf5"
+            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/Dataset/10t-10n-DOS2019-dataset-test.hdf5"
         )
         print("Found dataset files:", dataset_filelist)
 
         if args.model is not None:
             model_list = glob.glob(
-                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/output/10t-10n-DOS2019-DDoS-CNN.keras"
+                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/output/10t-10n-DOS2019-DDoS-CNN.keras"
             )
         else:
             model_list = glob.glob(
-                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/output/10t-10n-DOS2019-DDoS-CNN.keras"
+                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/output/10t-10n-DOS2019-DDoS-CNN.keras"
             )
         print("Found model files:", model_list)
         for model_path in model_list:

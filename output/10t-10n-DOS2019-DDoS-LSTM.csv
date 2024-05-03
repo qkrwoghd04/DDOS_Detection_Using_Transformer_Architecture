@@ -1,0 +1,2 @@
+Model,Samples,Accuracy,F1Score,Hyper-parameters,Validation Set
+DOS2019-DDoS-LSTM,725,0.9572,0.9562,,C:/Users/Jaeho/OneDrive/πŸ≈¡ »≠∏È/DDoSDetection/DDOS_Detection_Using_Various_Architecture/Dataset\10t-10n-DOS2019-dataset-val.hdf5

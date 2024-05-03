@@ -274,8 +274,8 @@ def train_test_split(flow_list,train_size=TRAIN_RATE, shuffle=True):
 def main(argv):
     command_options = " ".join(str(x) for x in argv[1:])
 
-    help_string = 'Usage[0]: python3 lucid_dataset_parser.py --dataset_type <dataset_name> --dataset_folder <folder path> --dataset_id <dataset identifier> --packets_per_flow <n> --time_window <t>\n' \
-                  'Usage[1]: python3 lucid_dataset_parser.py --preprocess_folder <folder path>'
+    help_string = 'Usage[0]: python3 ddos_dataset_parser.py --dataset_type <dataset_name> --dataset_folder <folder path> --dataset_id <dataset identifier> --packets_per_flow <n> --time_window <t>\n' \
+                  'Usage[1]: python3 ddos_dataset_parser.py --preprocess_folder <folder path>'
     manager = Manager()
 
     parser = argparse.ArgumentParser(

@@ -1,3 +1,7 @@
+# Version
+# python==3.11.9 conda based
+# tensorflow==2.9.0
+
 # Sample commands
 #
 # Training: python ddos_cnn.py --train Dataset
@@ -108,10 +112,10 @@ def compileModel(model, lr):
     )  # here we specify the loss function
 
 
-def train_model(model, X_train, y_train, X_val, y_val):
+def train_model(model, X_train, y_train, X_val, y_val, best_model_filename):
     es = EarlyStopping(monitor="val_loss", patience=PATIENCE, verbose=1, mode="min")
     mc = ModelCheckpoint(
-        "best_gru_model.keras",
+        best_model_filename,
         monitor="val_accuracy",
         mode="max",
         verbose=1,
@@ -130,7 +134,7 @@ def train_model(model, X_train, y_train, X_val, y_val):
 
 
 def main(argv):
-    help_string = "Usage: python3 lucid_cnn.py --train <dataset_folder> -e <epocs>"
+    help_string = "Usage: python3 ddos_gru.py --train <dataset_folder>"
 
     parser = argparse.ArgumentParser(
         description="DDoS attacks detection with convolutional neural networks",
@@ -219,7 +223,7 @@ def main(argv):
         # full_path = full_path.replace("//", "/")  # remove double slashes when needed
         # folder = full_path.split("\\")[-2]
         dataset_folder = (
-            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/"
+            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/"
             + full_path
         )
         X_train, Y_train = load_dataset(
@@ -258,14 +262,14 @@ def main(argv):
         print("input shape: " , input_shape)
         model = GRU_model(input_shape)
 
-        model = train_model(model, X_train, Y_train, X_val, Y_val)
+        model = train_model(model, X_train, Y_train, X_val, Y_val, best_model_filename=best_model_filename)
         best_model = load_model('best_gru_model.keras')
 
         # With refit=True (default) GridSearchCV refits the model on the whole training set (no folds) with the best
         # hyper-parameters and makes the resulting model available as rnd_search_cv.best_estimator_.model
       
         # We overwrite the checkpoint models with the one trained on the whole training set (not only k-1 folds)
-        # best_model.save(best_model_filename + ".keras")
+        best_model.save(best_model_filename + ".keras")
 
         # Alternatively, to save time, one could set refit=False and load the best model from the filesystem to test its performance
         # best_model = load_model(best_model_filename + '.h5')
@@ -313,17 +317,17 @@ def main(argv):
         iterations = args.iterations
 
         dataset_filelist = glob.glob(
-            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/Dataset/10t-10n-DOS2019-dataset-test.hdf5"
+            "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/Dataset/10t-10n-DOS2019-dataset-test.hdf5"
         )
         print("Found dataset files:", dataset_filelist)
 
         if args.model is not None:
             model_list = glob.glob(
-                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/output/10t-10n-DOS2019-DDoS-GRU.keras"
+                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/output/10t-10n-DOS2019-DDoS-GRU.keras"
             )
         else:
             model_list = glob.glob(
-                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Transformer_Architecture/output/10t-10n-DOS2019-DDoS-GRU.keras"
+                "C:/Users/Jaeho/OneDrive/바탕 화면/DDoSDetection/DDOS_Detection_Using_Various_Architecture/output/10t-10n-DOS2019-DDoS-GRU.keras"
             )
         print("Found model files:", model_list)
         for model_path in model_list:
