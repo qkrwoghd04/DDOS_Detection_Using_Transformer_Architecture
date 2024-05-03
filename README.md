@@ -33,6 +33,35 @@ python (name of model ython file).py --train Dataset
 ```
 python (name of model python file).py --predict Dataset   
 ```
+
+## Result
+### Information
+|Column |	Explanation|
+|-------|------------|
+|Model|	The name of the model being evaluated.|
+|Time|	The time taken to evaluate the model.|
+|Packets|	The total number of packets processed during evaluation.|
+|Samples|	The total number of samples (flows) used for evaluation.|
+|DDOS%|	The percentage of DDoS samples in the dataset.|
+|Accuracy|	The overall accuracy of the model in classifying samples as either benign or DDoS.|
+|F1Score|	The F1 score, a balanced measure of precision and recall.|
+|TPR|	The true positive rate (sensitivity), the proportion of actual DDoS samples correctly identified as DDoS.|
+|FPR|	The false positive rate, the proportion of benign samples incorrectly identified as DDoS.|
+|TNR|	The true negative rate (specificity), the proportion of actual benign samples correctly identified as benign.|
+|FNR|	The false negative rate, the proportion of actual DDoS samples incorrectly identified as benign.|
+|Source|	The source of the dataset or evaluation results.|
+
+---
+## It can be observed that the GRU model outperforms the conventional CNN model
+### Reason
+GRU models are a type of recurrent neural network (RNN) that are powerful at processing time-series data. Since DDoS attacks involve network traffic data with patterns that change over time, GRU models are well-suited for detecting these attacks. CNN models may have lower performance in DDoS detection because they have relatively weaker time-series data processing capabilities.
+|Model|Time|Packets|Samples|DDOS%|Accuracy|F1Score|TPR|FPR|TNR|FNR|Source|
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|Existing CNN|0.052|3748|906|0.531|0.9404|0.9408|0.9954|0.1095|0.8905|0.0046|10t-10n-DOS2019-dataset-test.hdf5|
+|Implemented GRU|0.038|3748|906|0.458|**0.9603**|0.9574|0.9397|0.0211|0.9789|0.0603|10t-10n-DOS2019-dataset-test.hdf5|
+|Implemented LSTM|0.044|3748|906|0.398|0.9139|0.9015|0.8283|0.0084|0.9916|0.1717|10t-10n-DOS2019-dataset-test.hdf5|
+
+
 ---
 ## Dataset
 The dataset employed labeled pcap files containing traffic traces, and preprocessing functionalities were implemented through the ddos_dataset_parser.py script
