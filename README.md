@@ -38,3 +38,8 @@ python (name of model python file).py --predict Dataset
 The dataset employed labeled pcap files containing traffic traces, and preprocessing functionalities were implemented through the ddos_dataset_parser.py script
 [Dataset Link](https://www.unb.ca/cic/datasets/ddos-2019.html)
 <img width="958" alt="dataset" src="https://github.com/qkrwoghd04/DDOS_Detection_Using_Various_Architecture/assets/122519801/7e47050d-199d-435a-b56e-0ba1554e1005">
+
+---
+## Reference
+https://github.com/Abhirambs-08/DDos-Detection-Using-Machine-Learning-Algorithms-Python/blob/main/Dataset%20and%20code/DDoS%20Detection%20using%20ML.ipynb
+https://github.com/doriguzzi/lucid-ddos
