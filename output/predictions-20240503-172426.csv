@@ -1,0 +1,2 @@
+Model,Time,Packets,Samples,DDOS%,Accuracy,F1Score,TPR,FPR,TNR,FNR,Source
+DOS2019-DDoS-LSTM,0.044,3748,906,0.398,0.9139,0.9015,0.8283,0.0084,0.9916,0.1717,10t-10n-DOS2019-dataset-test.hdf5
