@@ -73,3 +73,7 @@ The dataset employed labeled pcap files containing traffic traces, and preproces
 https://github.com/Abhirambs-08/DDos-Detection-Using-Machine-Learning-Algorithms-Python/blob/main/Dataset%20and%20code/DDoS%20Detection%20using%20ML.ipynb<br>
 https://github.com/doriguzzi/lucid-ddos<br>
 https://github.com/mvoassis/CIC-DDoS2019-DeepLearning/blob/main/GRU-DDoS2019.ipynb<br>
+
+---
+## License
+This code is released under the Apache License, Version 2.0
